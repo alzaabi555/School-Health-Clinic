@@ -1,5 +1,5 @@
 import express from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { db, logAudit } from '../db.js';
 import { authenticate, requireRole, AuthRequest } from '../middleware/auth.js';
 

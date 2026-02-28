@@ -110,6 +110,7 @@ router.delete('/reset-year', requireRole(['Admin']), (req: AuthRequest, res) => 
       db.prepare('DELETE FROM DailyVisits').run();
       db.prepare('DELETE FROM SpecialFollowUps').run();
       db.prepare('DELETE FROM Referrals').run();
+      db.prepare('DELETE FROM ClinicAppointments').run();
       db.prepare('DELETE FROM Students').run();
       // We don't delete Users, Settings, or AuditLogs
     });

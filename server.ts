@@ -9,6 +9,7 @@ import studentsRoutes from './server/routes/students.js';
 import visitsRoutes from './server/routes/visits.js';
 import specialCasesRoutes from './server/routes/specialCases.js';
 import referralsRoutes from './server/routes/referrals.js';
+import clinicAppointmentsRoutes from './server/routes/clinic-appointments.js';
 import settingsRoutes from './server/routes/settings.js';
 import dashboardRoutes from './server/routes/dashboard.js';
 import auditRoutes from './server/routes/audit.js';
@@ -33,6 +34,7 @@ async function startServer() {
   app.use('/api/visits', visitsRoutes);
   app.use('/api/special-cases', specialCasesRoutes);
   app.use('/api/referrals', referralsRoutes);
+  app.use('/api/clinic-appointments', clinicAppointmentsRoutes);
   app.use('/api/settings', settingsRoutes);
   app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/audit', auditRoutes);

@@ -203,8 +203,10 @@ ${item.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
                     className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500"
                   >
                     <option value="">اختر الطالب...</option>
-                    {students.filter(s => s.IsSpecialCase).map(s => (
-                      <option key={s.Id} value={s.Id}>{s.Name} - {s.Grade} ({s.ChronicCondition})</option>
+                    {students.map(s => (
+                      <option key={s.Id} value={s.Id}>
+                        {s.Name} - {s.Grade} {s.IsSpecialCase ? `(${s.ChronicCondition || 'حالة خاصة'})` : ''}
+                      </option>
                     ))}
                   </select>
                   {errors.studentId && <p className="text-red-500 text-sm mt-1">{errors.studentId.message}</p>}

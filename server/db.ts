@@ -86,6 +86,18 @@ export function initDb() {
       FOREIGN KEY (CreatedByUserId) REFERENCES Users(Id)
     );
 
+    CREATE TABLE IF NOT EXISTS ClinicAppointments (
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      StudentId INTEGER NOT NULL,
+      Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+      HealthProblem TEXT,
+      ClinicName TEXT,
+      CreatedByUserId INTEGER NOT NULL,
+      WhatsAppNotified INTEGER DEFAULT 0,
+      FOREIGN KEY (StudentId) REFERENCES Students(Id),
+      FOREIGN KEY (CreatedByUserId) REFERENCES Users(Id)
+    );
+
     CREATE TABLE IF NOT EXISTS AuditLogs (
       Id INTEGER PRIMARY KEY AUTOINCREMENT,
       UserId INTEGER,

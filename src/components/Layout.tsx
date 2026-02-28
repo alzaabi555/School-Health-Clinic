@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../utils/api';
 import { 
   LayoutDashboard, Users, Activity, FileText, 
-  Settings, LogOut, UserPlus, Archive, ClipboardList 
+  Settings, LogOut, UserPlus, Archive, ClipboardList, Stethoscope
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -33,6 +33,7 @@ export default function Layout() {
     { name: 'سجل المترددين', path: '/visits', icon: Activity },
     { name: 'الحالات الخاصة', path: '/special-cases', icon: ClipboardList },
     { name: 'المحولين', path: '/referrals', icon: FileText },
+    { name: 'مواعيد العيادات التخصصية', path: '/clinic-appointments', icon: Stethoscope },
     { name: 'الأرشيف', path: '/archive', icon: Archive },
     { name: 'الإعدادات', path: '/settings', icon: Settings },
   ];

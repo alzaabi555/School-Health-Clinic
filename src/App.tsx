@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Visits from './pages/Visits';
 import SpecialCases from './pages/SpecialCases';
 import Referrals from './pages/Referrals';
+import ClinicAppointments from './pages/ClinicAppointments';
 import Archive from './pages/Archive';
 import Settings from './pages/Settings';
 import Students from './pages/Students';
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="visits" element={<Visits />} />
             <Route path="special-cases" element={<SpecialCases />} />
             <Route path="referrals" element={<Referrals />} />
+            <Route path="clinic-appointments" element={<ClinicAppointments />} />
             <Route path="archive" element={<Archive />} />
             <Route path="settings" element={<Settings />} />
           </Route>

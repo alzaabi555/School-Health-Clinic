@@ -3,7 +3,7 @@
   "description": "School Health Clinic Management System",
   "author": "School Health Room",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "module",
   "main": "electron-main.js",
   "scripts": {

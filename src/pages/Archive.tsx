@@ -21,6 +21,7 @@ export default function Archive() {
       let endpoint = '/api/visits';
       if (searchType === 'special-cases') endpoint = '/api/special-cases';
       if (searchType === 'referrals') endpoint = '/api/referrals';
+      if (searchType === 'clinic-appointments') endpoint = '/api/clinic-appointments';
 
       const data = await apiFetch(endpoint);
       
@@ -34,7 +35,7 @@ export default function Archive() {
         const start = new Date(filters.startDate);
         start.setHours(0, 0, 0, 0);
         filtered = filtered.filter((item: any) => {
-          const date = new Date(item.DateTime || item.FollowUpDate);
+          const date = new Date(item.DateTime || item.FollowUpDate || item.Date);
           return date >= start;
         });
       }
@@ -42,7 +43,7 @@ export default function Archive() {
         const end = new Date(filters.endDate);
         end.setHours(23, 59, 59, 999);
         filtered = filtered.filter((item: any) => {
-          const date = new Date(item.DateTime || item.FollowUpDate);
+          const date = new Date(item.DateTime || item.FollowUpDate || item.Date);
           return date <= end;
         });
       }
@@ -68,7 +69,7 @@ export default function Archive() {
 
     const exportData = results.map(item => {
       const base = {
-        'التاريخ': format(new Date(item.DateTime || item.FollowUpDate), 'yyyy/MM/dd', { locale: ar }),
+        'التاريخ': format(new Date(item.DateTime || item.FollowUpDate || item.Date), 'yyyy/MM/dd', { locale: ar }),
         'الطالب': item.StudentName,
         'الصف': item.Grade,
       };
@@ -87,12 +88,19 @@ export default function Archive() {
           'الأعراض': item.Symptoms,
           'المستخدم': item.CreatedBy
         };
-      } else {
+      } else if (searchType === 'referrals') {
         return {
           ...base,
           'السبب': item.Reason,
           'الجهة المحول إليها': item.Destination,
           'المستخدم': item.CreatedBy
+        };
+      } else {
+        return {
+          ...base,
+          'المشكلة الصحية': item.HealthProblem,
+          'العيادة التخصصية': item.ClinicName,
+          'المستخدم': item.CreatedBy || 'النظام'
         };
       }
     });
@@ -122,6 +130,7 @@ export default function Archive() {
               <option value="visits">سجل المترددين</option>
               <option value="special-cases">الحالات الخاصة</option>
               <option value="referrals">المحولين</option>
+              <option value="clinic-appointments">مواعيد العيادات التخصصية</option>
             </select>
           </div>
 
@@ -200,7 +209,7 @@ export default function Archive() {
                 results.map((item: any) => (
                   <tr key={item.Id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-sm">
-                      {format(new Date(item.DateTime || item.FollowUpDate), 'yyyy/MM/dd', { locale: ar })}
+                      {format(new Date(item.DateTime || item.FollowUpDate || item.Date), 'yyyy/MM/dd', { locale: ar })}
                     </td>
                     <td className="px-6 py-4 font-medium">{item.StudentName}</td>
                     <td className="px-6 py-4">{item.Grade}</td>
@@ -208,8 +217,9 @@ export default function Archive() {
                       {searchType === 'visits' && item.Diagnosis}
                       {searchType === 'special-cases' && item.FollowUpType}
                       {searchType === 'referrals' && item.Reason}
+                      {searchType === 'clinic-appointments' && `${item.ClinicName} - ${item.HealthProblem}`}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-500">{item.CreatedBy}</td>
+                    <td className="px-6 py-4 text-sm text-slate-500">{item.CreatedBy || 'النظام'}</td>
                   </tr>
                 ))
               )}

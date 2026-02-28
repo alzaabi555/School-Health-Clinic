@@ -13,8 +13,16 @@ async function createWindow() {
   // Start the Express server as a child process
   const serverPath = path.join(__dirname, 'dist-server', 'server.js');
   
+  // Get a safe, writable directory for the database (AppData/Roaming/...)
+  const dbPath = path.join(app.getPath('userData'), 'school_health.db');
+
   serverProcess = spawn(process.execPath, [serverPath], {
-    env: { ...process.env, NODE_ENV: 'production' },
+    env: { 
+      ...process.env, 
+      NODE_ENV: 'production',
+      ELECTRON_RUN_AS_NODE: '1', // Prevents infinite window loop
+      DB_PATH: dbPath            // Ensures DB is saved in a writable folder
+    },
     stdio: 'inherit'
   });
 

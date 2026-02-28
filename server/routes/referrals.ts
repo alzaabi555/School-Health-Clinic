@@ -7,7 +7,7 @@ router.use(authenticate);
 
 router.get('/', (req: AuthRequest, res) => {
   const referrals = db.prepare(`
-    SELECT r.*, s.Name as StudentName, s.Grade, u.Username as CreatedBy
+    SELECT r.*, s.Name as StudentName, s.Grade, s.Phone, u.Username as CreatedBy
     FROM Referrals r
     JOIN Students s ON r.StudentId = s.Id
     JOIN Users u ON r.CreatedByUserId = u.Id
@@ -17,11 +17,11 @@ router.get('/', (req: AuthRequest, res) => {
 });
 
 router.post('/', requireRole(['Admin', 'School Nurse']), (req: AuthRequest, res) => {
-  const { studentId, reason, destination } = req.body;
+  const { studentId, reason, destination, age, gender, history, referralTime } = req.body;
   const info = db.prepare(`
-    INSERT INTO Referrals (StudentId, Reason, Destination, CreatedByUserId)
-    VALUES (?, ?, ?, ?)
-  `).run(studentId, reason, destination, req.user!.id);
+    INSERT INTO Referrals (StudentId, Reason, Destination, Age, Gender, History, ReferralTime, CreatedByUserId)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(studentId, reason, destination, age, gender, history, referralTime, req.user!.id);
   
   logAudit(req.user!.id, 'CREATE_REFERRAL', 'Referrals', info.lastInsertRowid as number, req.ip || '');
   res.json({ id: info.lastInsertRowid });

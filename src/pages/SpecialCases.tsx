@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { sendWhatsAppOnWindows } from '../utils/whatsapp';
+import PrintHeader from '../components/PrintHeader';
 
 const specialCaseSchema = z.object({
   studentId: z.string().min(1, 'الطالب مطلوب'),
@@ -68,8 +70,29 @@ export default function SpecialCases() {
   };
 
   const sendWhatsApp = async (item: any) => {
-    // Similar logic to Visits
-    alert('سيتم إرسال إشعار واتساب لولي الأمر');
+    if (!item.Phone) {
+      alert('لا يوجد رقم هاتف لهذا الطالب');
+      return;
+    }
+    
+    const message = `إشعار من الصحة المدرسية (متابعة حالة خاصة):
+الطالب: ${item.StudentName}
+الصف: ${item.Grade}
+نوع المتابعة: ${item.FollowUpType}
+الأعراض: ${item.Symptoms}
+الخدمات المقدمة: ${item.Services}
+${item.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
+نتمنى له دوام الصحة والعافية.`;
+
+    sendWhatsAppOnWindows(item.Phone, message);
+
+    try {
+      // Assuming there's an endpoint to update whatsapp status for special cases
+      await apiFetch(`/api/special-cases/${item.Id}/whatsapp`, { method: 'PUT' });
+      fetchData();
+    } catch (error) {
+      console.error('Error updating whatsapp status:', error);
+    }
   };
 
   const filteredCases = cases.filter(c =>
@@ -79,7 +102,8 @@ export default function SpecialCases() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <PrintHeader title="سجل متابعة الحالات الخاصة" />
+      <div className="flex justify-between items-center mb-6 print:hidden">
         <div className="relative w-64">
           <input
             type="text"

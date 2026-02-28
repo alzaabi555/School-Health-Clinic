@@ -7,7 +7,7 @@ router.use(authenticate);
 
 router.get('/', (req: AuthRequest, res) => {
   const cases = db.prepare(`
-    SELECT f.*, s.Name as StudentName, s.Grade, s.ChronicCondition, u.Username as CreatedBy
+    SELECT f.*, s.Name as StudentName, s.Grade, s.Phone, s.ChronicCondition, u.Username as CreatedBy
     FROM SpecialFollowUps f
     JOIN Students s ON f.StudentId = s.Id
     JOIN Users u ON f.CreatedByUserId = u.Id

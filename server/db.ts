@@ -78,6 +78,10 @@ export function initDb() {
       DateTime DATETIME DEFAULT CURRENT_TIMESTAMP,
       CreatedByUserId INTEGER NOT NULL,
       WhatsAppNotified INTEGER DEFAULT 0,
+      Age TEXT,
+      Gender TEXT,
+      History TEXT,
+      ReferralTime TEXT,
       FOREIGN KEY (StudentId) REFERENCES Students(Id),
       FOREIGN KEY (CreatedByUserId) REFERENCES Users(Id)
     );
@@ -97,8 +101,7 @@ export function initDb() {
       Id INTEGER PRIMARY KEY CHECK (Id = 1),
       SchoolName TEXT,
       SupervisorName TEXT,
-      LogoPath TEXT,
-      DailyClosingTime TEXT
+      LogoPath TEXT
     );
   `);
 
@@ -112,8 +115,14 @@ export function initDb() {
   // Seed default settings
   const settingsExist = db.prepare('SELECT 1 FROM Settings WHERE Id = 1').get();
   if (!settingsExist) {
-    db.prepare('INSERT INTO Settings (Id, SchoolName, SupervisorName, DailyClosingTime) VALUES (1, ?, ?, ?)').run('مدرسة الأمل', 'المشرف الصحي', '14:00');
+    db.prepare('INSERT INTO Settings (Id, SchoolName, SupervisorName) VALUES (1, ?, ?)').run('', '');
   }
+
+  // Migrations
+  try { db.prepare('ALTER TABLE Referrals ADD COLUMN Age TEXT').run(); } catch (e) {}
+  try { db.prepare('ALTER TABLE Referrals ADD COLUMN Gender TEXT').run(); } catch (e) {}
+  try { db.prepare('ALTER TABLE Referrals ADD COLUMN History TEXT').run(); } catch (e) {}
+  try { db.prepare('ALTER TABLE Referrals ADD COLUMN ReferralTime TEXT').run(); } catch (e) {}
 }
 
 export function logAudit(userId: number | null, actionType: string, tableName: string, recordId: number | null, ipAddress: string = '') {

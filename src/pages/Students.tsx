@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { apiFetch } from '../utils/api';
-import { Plus, Search, Edit, X, Upload, Download } from 'lucide-react';
+import { Plus, Search, Edit, X, Upload, Download, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -102,19 +102,27 @@ export default function Students() {
     reader.readAsBinaryString(file);
   };
 
-  const handleExport = () => {
-    const exportData = students.map(s => ({
-      'الاسم': s.Name,
-      'الصف': s.Grade,
-      'رقم ولي الأمر': s.Phone || '',
-      'حالة خاصة': s.IsSpecialCase ? 'نعم' : 'لا',
-      'المرض المزمن': s.ChronicCondition || ''
-    }));
+  const handleDeleteAll = async () => {
+    if (confirm('تحذير خطير: هل أنت متأكد من رغبتك في حذف جميع الطلاب؟ هذا الإجراء لا يمكن التراجع عنه وسيحذف جميع بيانات الطلاب استعداداً للعام الجديد.')) {
+      try {
+        await apiFetch('/api/students', { method: 'DELETE' });
+        alert('تم حذف جميع الطلاب بنجاح');
+        fetchStudents();
+      } catch (error: any) {
+        alert(error.message || 'حدث خطأ أثناء الحذف');
+      }
+    }
+  };
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
-    XLSX.writeFile(wb, "الطلاب.xlsx");
+  const handleDeleteStudent = async (id: number, name: string) => {
+    if (confirm(`هل أنت متأكد من حذف الطالب "${name}"؟`)) {
+      try {
+        await apiFetch(`/api/students/${id}`, { method: 'DELETE' });
+        fetchStudents();
+      } catch (error: any) {
+        alert(error.message || 'حدث خطأ أثناء الحذف');
+      }
+    }
   };
 
   const filteredStudents = students.filter(student =>
@@ -170,7 +178,7 @@ export default function Students() {
           />
           <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <input
             type="file"
             accept=".xlsx, .xls"
@@ -179,24 +187,24 @@ export default function Students() {
             onChange={handleFileUpload}
           />
           <button
-            onClick={handleExport}
-            className="flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors"
+            onClick={handleDeleteAll}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-lg bg-red-50/70 border border-red-200/50 shadow-[0_4px_12px_rgba(239,68,68,0.1)] hover:bg-red-100/80 hover:shadow-[0_4px_16px_rgba(239,68,68,0.15)] transition-all duration-300 text-red-700 font-medium"
           >
-            <Download size={20} />
-            <span>تصدير Excel</span>
+            <Trash2 size={18} />
+            <span>حذف الجميع</span>
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-lg bg-white/70 border border-white/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white/90 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-300 text-slate-700 font-medium"
           >
-            <Upload size={20} />
+            <Upload size={18} className="text-emerald-600" />
             <span>استيراد Excel</span>
           </button>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-lg bg-emerald-50/70 border border-emerald-200/50 shadow-[0_4px_12px_rgba(16,185,129,0.1)] hover:bg-emerald-100/80 hover:shadow-[0_4px_16px_rgba(16,185,129,0.15)] transition-all duration-300 text-emerald-700 font-medium"
           >
-            <Plus size={20} />
+            <Plus size={18} />
             <span>إضافة طالب</span>
           </button>
         </div>
@@ -234,9 +242,14 @@ export default function Students() {
                   </td>
                   <td className="px-6 py-4">{student.ChronicCondition || '-'}</td>
                   <td className="px-6 py-4">
-                    <button onClick={() => openEditModal(student)} className="text-blue-600 hover:text-blue-800">
-                      <Edit size={18} />
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button onClick={() => openEditModal(student)} className="text-blue-600 hover:text-blue-800" title="تعديل">
+                        <Edit size={18} />
+                      </button>
+                      <button onClick={() => handleDeleteStudent(student.Id, student.Name)} className="text-red-500 hover:text-red-700" title="حذف">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 import { 
   LayoutDashboard, Users, Activity, FileText, 
   Settings, LogOut, UserPlus, Archive, ClipboardList 
@@ -9,6 +11,21 @@ import { clsx } from 'clsx';
 export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [supervisorName, setSupervisorName] = useState('');
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await apiFetch('/api/settings');
+        if (data.SupervisorName) {
+          setSupervisorName(data.SupervisorName);
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const navItems = [
     { name: 'الرئيسية', path: '/', icon: LayoutDashboard },
@@ -19,6 +36,8 @@ export default function Layout() {
     { name: 'الأرشيف', path: '/archive', icon: Archive },
     { name: 'الإعدادات', path: '/settings', icon: Settings },
   ];
+
+  const displayName = supervisorName || user?.username || 'المشرف الصحي';
 
   return (
     <div className="flex h-screen bg-slate-50">
@@ -49,10 +68,10 @@ export default function Layout() {
         <div className="p-4 border-t border-emerald-700">
           <div className="flex items-center gap-3 px-2">
             <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-lg font-bold">
-              {user?.username.charAt(0).toUpperCase()}
+              {displayName.charAt(0).toUpperCase()}
             </div>
             <div>
-              <div className="font-medium">{user?.username}</div>
+              <div className="font-medium">{displayName}</div>
               <div className="text-xs text-emerald-200">{user?.role}</div>
             </div>
           </div>

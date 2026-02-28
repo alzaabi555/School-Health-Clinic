@@ -3,7 +3,7 @@
   "description": "School Health Clinic Management System",
   "author": "School Health Room",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.0",
   "type": "module",
   "main": "electron-main.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.4.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

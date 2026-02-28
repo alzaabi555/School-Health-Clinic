@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
@@ -34,6 +34,15 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
     },
+  });
+
+  // Intercept window.open to open in default OS browser/app (fixes WhatsApp white screen issue)
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('http:') || url.startsWith('https:') || url.startsWith('whatsapp:')) {
+      shell.openExternal(url);
+      return { action: 'deny' };
+    }
+    return { action: 'allow' };
   });
 
   // Remove default menu

@@ -54,4 +54,28 @@ router.post('/bulk', (req: AuthRequest, res) => {
   }
 });
 
+router.delete('/:id', (req: AuthRequest, res) => {
+  const { id } = req.params;
+  try {
+    // Optional: Check if student has related records before deleting, or just delete them.
+    // For now, we'll just delete the student. If foreign keys are enforced, this might fail unless cascade is set.
+    db.prepare('DELETE FROM Students WHERE Id = ?').run(id);
+    logAudit(req.user!.id, 'DELETE_STUDENT', 'Students', Number(id), req.ip || '');
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: 'لا يمكن حذف الطالب لوجود سجلات مرتبطة به' });
+  }
+});
+
+router.delete('/', (req: AuthRequest, res) => {
+  try {
+    // Delete all students
+    db.prepare('DELETE FROM Students').run();
+    logAudit(req.user!.id, 'DELETE_ALL_STUDENTS', 'Students', 0, req.ip || '');
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: 'حدث خطأ أثناء حذف جميع الطلاب' });
+  }
+});
+
 export default router;

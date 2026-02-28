@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { sendWhatsAppOnWindows } from '../utils/whatsapp';
+import PrintHeader from '../components/PrintHeader';
 
 const visitSchema = z.object({
   studentId: z.string().min(1, 'الطالب مطلوب'),
@@ -86,8 +88,7 @@ export default function Visits() {
 ${visit.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
 نتمنى له الشفاء العاجل.`;
 
-    const url = `https://wa.me/${visit.Phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    sendWhatsAppOnWindows(visit.Phone, message);
 
     try {
       await apiFetch(`/api/visits/${visit.Id}/whatsapp`, { method: 'PUT' });
@@ -104,7 +105,8 @@ ${visit.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <PrintHeader title="سجل المترددين اليومي" />
+      <div className="flex justify-between items-center mb-6 print:hidden">
         <div className="relative w-64">
           <input
             type="text"

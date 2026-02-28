@@ -113,17 +113,12 @@ export default function Settings() {
 
   const handleResetYear = async () => {
     if (confirm('تحذير خطير جداً: هل أنت متأكد من رغبتك في حذف جميع بيانات الطلاب والزيارات والمتابعات للبدء بعام دراسي جديد؟ هذا الإجراء لا يمكن التراجع عنه!')) {
-      const confirmWord = prompt('لتأكيد الحذف، اكتب كلمة "تأكيد"');
-      if (confirmWord === 'تأكيد') {
-        try {
-          await apiFetch('/api/settings/reset-year', { method: 'DELETE' });
-          alert('تم حذف جميع البيانات بنجاح. عام دراسي جديد سعيد!');
-          window.location.reload();
-        } catch (error) {
-          alert('فشل حذف البيانات');
-        }
-      } else {
-        alert('تم إلغاء عملية الحذف');
+      try {
+        await apiFetch('/api/settings/reset-year', { method: 'DELETE' });
+        alert('تم حذف جميع البيانات بنجاح. عام دراسي جديد سعيد!');
+        window.location.reload();
+      } catch (error) {
+        alert('فشل حذف البيانات. تأكد من أنك تملك صلاحية (مدير).');
       }
     }
   };

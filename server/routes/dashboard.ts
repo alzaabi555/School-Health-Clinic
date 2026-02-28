@@ -11,6 +11,7 @@ router.get('/', (req: AuthRequest, res) => {
   const visitsToday = db.prepare(`SELECT COUNT(*) as count FROM DailyVisits WHERE date(DateTime) = ?`).get(today) as any;
   const specialCases = db.prepare(`SELECT COUNT(*) as count FROM SpecialFollowUps WHERE date(FollowUpDate) = ?`).get(today) as any;
   const referralsToday = db.prepare(`SELECT COUNT(*) as count FROM Referrals WHERE date(DateTime) = ?`).get(today) as any;
+  const totalStudents = db.prepare(`SELECT COUNT(*) as count FROM Students`).get() as any;
   
   const settings = db.prepare('SELECT SchoolName FROM Settings WHERE Id = 1').get() as any;
 
@@ -28,6 +29,7 @@ router.get('/', (req: AuthRequest, res) => {
     visitsToday: visitsToday.count,
     specialCases: specialCases.count,
     referralsToday: referralsToday.count,
+    totalStudents: totalStudents.count,
     weeklyStats
   });
 });

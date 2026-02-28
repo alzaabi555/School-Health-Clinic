@@ -28,7 +28,7 @@ export default function Dashboard() {
     { title: 'زيارات اليوم', value: data.visitsToday, icon: Activity, bg: 'bg-blue-100', text: 'text-blue-600' },
     { title: 'الحالات الخاصة', value: data.specialCases, icon: ClipboardList, bg: 'bg-purple-100', text: 'text-purple-600' },
     { title: 'المحولين اليوم', value: data.referralsToday, icon: FileText, bg: 'bg-orange-100', text: 'text-orange-600' },
-    { title: 'إجمالي الطلاب', value: '---', icon: Users, bg: 'bg-emerald-100', text: 'text-emerald-600' },
+    { title: 'إجمالي الطلاب', value: data.totalStudents, icon: Users, bg: 'bg-emerald-100', text: 'text-emerald-600' },
   ];
 
   return (

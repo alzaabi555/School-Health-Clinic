@@ -118,6 +118,7 @@ router.delete('/reset-year', requireRole(['Admin']), (req: AuthRequest, res) => 
     logAudit(req.user!.id, 'RESET_NEW_YEAR', 'All', null, req.ip || '');
     res.json({ success: true });
   } catch (error: any) {
+    console.error('Reset year error:', error);
     res.status(500).json({ error: 'فشل حذف البيانات' });
   }
 });

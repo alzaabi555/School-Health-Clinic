@@ -117,13 +117,22 @@ ${visit.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
           />
           <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
-        >
-          <Plus size={20} />
-          <span>تسجيل زيارة جديدة</span>
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors"
+          >
+            <Printer size={20} />
+            <span>طباعة السجل</span>
+          </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+          >
+            <Plus size={20} />
+            <span>تسجيل زيارة جديدة</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -137,7 +146,7 @@ ${visit.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
               <th className="px-4 py-3 text-sm font-semibold text-slate-600">العلاج</th>
               <th className="px-4 py-3 text-sm font-semibold text-slate-600">الأدوية</th>
               <th className="px-4 py-3 text-sm font-semibold text-slate-600">تحويل</th>
-              <th className="px-4 py-3 text-sm font-semibold text-slate-600">إجراءات</th>
+              <th className="px-4 py-3 text-sm font-semibold text-slate-600 print:hidden">إجراءات</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
@@ -165,7 +174,7 @@ ${visit.Referred ? 'تم تحويل الطالب للمركز الصحي' : ''}
                       <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">نعم</span>
                     ) : '-'}
                   </td>
-                  <td className="px-4 py-4 flex gap-2">
+                  <td className="px-4 py-4 flex gap-2 print:hidden">
                     <button 
                       onClick={() => sendWhatsApp(visit)}
                       className={`p-1.5 rounded-lg transition-colors ${visit.WhatsAppNotified ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600 hover:bg-green-50 hover:text-green-600'}`}

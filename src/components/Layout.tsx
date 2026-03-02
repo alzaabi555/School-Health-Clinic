@@ -66,15 +66,29 @@ export default function Layout() {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-emerald-700">
+        <div className="p-4 border-t border-emerald-700 flex flex-col gap-4">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-lg font-bold">
+            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-lg font-bold shadow-sm">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="font-medium">{displayName}</div>
               <div className="text-xs text-emerald-200">{user?.role}</div>
             </div>
+          </div>
+
+          <div className="pt-4 border-t border-emerald-700/50 flex flex-col items-center justify-center gap-2 text-emerald-200/80">
+            <span className="text-xs font-medium tracking-wide">إعداد وتصميم</span>
+            <img 
+              src="/developer-logo.png" 
+              alt="محمد الزعابي" 
+              className="h-20 object-contain drop-shadow-md transition-transform hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <span className="text-sm font-bold text-emerald-100 hidden">محمد الزعابي</span>
           </div>
         </div>
       </aside>
